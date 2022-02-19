@@ -131,4 +131,3 @@ foreach (var monthItem in monthItemList)
     }
 }
 
-Console.ReadKey();
