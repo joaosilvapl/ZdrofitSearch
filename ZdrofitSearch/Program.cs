@@ -19,14 +19,15 @@ var clubs = new Dictionary<string, string>
     {"Grójecka", "https://zdrofit.pl/kluby-fitness/warszawa-ochota-grojecka/grafik-zajec" },
     {"Jerozolimskie", "https://zdrofit.pl/kluby-fitness/warszawa-ochota-jerozolimskie/grafik-zajec" },
     {"Bukowińska", "https://zdrofit.pl/kluby-fitness/warszawa-mokotow-metro/grafik-zajec" },
-    {"Żwirki i Wigury", "https://zdrofit.pl/kluby-fitness/warszawa-wlochy-zwirki-i-wigury/grafik-zajec" }
+    {"Żwirki i Wigury", "https://zdrofit.pl/kluby-fitness/warszawa-wlochy-zwirki-i-wigury/grafik-zajec" },
+    {"Rondo ONZ", "https://zdrofit.pl/kluby-fitness/warszawa-centrum-rondo-onz/grafik-zajec" }
 };
 
 var monthNames = new[] {"stycznia", "lutego", "marca", "kwietnia",
     "maja", "czerwca", "lipca", "sierpnia", "września",
     "pażdziernika", "listopada", "grudnia" };
 
-var relevantTrainings = new[] { "sztangi", "zdrowy kręgosłup" };
+var relevantTrainings = new[] { "sztangi", "zdrowy kręgosłup", "stretching" };
 
 List<ScheduleItem> relevantItems = new List<ScheduleItem>();
 
@@ -44,7 +45,14 @@ foreach (var club in clubs)
 
     var tHeaders = scheduleTable.QuerySelector("thead").QuerySelectorAll("th");
 
-    var days = tHeaders.Select(x => x.QuerySelector("strong")?.InnerHtml).Where(y => y != null).ToArray();
+    var days = tHeaders.Select(x => {
+        string result = null;
+        if(x.QuerySelector("strong") != null)
+        {
+            result = x.InnerHtml.Replace("<strong>", "").Replace("</strong>", " - ");
+        }
+        return result;
+        }).Where(y => y != null).ToArray();
 
     var tRows = scheduleTable.QuerySelector("tbody").QuerySelectorAll("tr");
 
@@ -124,8 +132,7 @@ foreach (var monthItem in monthItemList)
         Console.WriteLine(dateItem.Date);
         foreach (var item in dateItem.Items.OrderBy(x => x.Time))
         {
-            var registrationLink = item.RegistrationLink != null ? BaseUrl + item.RegistrationLink.TrimStart('/') : null;
-            Console.WriteLine($"{item.Time} - {item.Name} - {item.ClubName} - {registrationLink}");
+            Console.WriteLine($"{item.Time} - {item.Name} - {item.ClubName}");
         }
         Console.WriteLine("----------");
     }
